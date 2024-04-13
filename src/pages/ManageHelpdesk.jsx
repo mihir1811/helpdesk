@@ -76,6 +76,9 @@ const ManageHelpdesk = () => {
       setStaffData(res.data);
     } catch (error) {
       console.log(error);
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -95,6 +98,9 @@ const ManageHelpdesk = () => {
     } catch (error) {
       console.log(error);
       dispatch({ type: IS_LOADING, payload: false });
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -116,6 +122,9 @@ const ManageHelpdesk = () => {
       getCatrgories();
     } catch (error) {
       console.log(error);
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -142,6 +151,9 @@ const ManageHelpdesk = () => {
       setIsSubcategory(true);
     } catch (error) {
       console.log(error);
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -172,6 +184,9 @@ const ManageHelpdesk = () => {
       setIsSubcategory(true);
     } catch (error) {
       console.log(error);
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   };
 

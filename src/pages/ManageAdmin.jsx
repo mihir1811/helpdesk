@@ -46,6 +46,10 @@ const ManageAdmin = () => {
       return res.data;
     } catch (error) {
       console.log(error);
+      dispatch({ type: IS_LOADING, payload: false });
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   };
   useEffect(() => {
@@ -73,6 +77,11 @@ const ManageAdmin = () => {
       dispatch({ type: IS_LOADING, payload: false });
     } catch (error) {
       console.log(error)
+      dispatch({ type: IS_LOADING, payload: false });
+
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   }
 
@@ -88,6 +97,9 @@ const ManageAdmin = () => {
       getAdminList()
     } catch (error) {
       console.log(error)
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   }
 
@@ -110,6 +122,9 @@ const ManageAdmin = () => {
 
     } catch (error) {
       console.log(error)
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   }
 

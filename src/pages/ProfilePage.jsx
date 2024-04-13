@@ -43,6 +43,9 @@ const ProfilePage = () => {
     } catch (error) {
         dispatch({ type: IS_LOADING, payload: false });
         toast.error(error.message);
+        if(error.response.status == 401){
+          window.location.href = '/login';
+        }
     }
   };
 

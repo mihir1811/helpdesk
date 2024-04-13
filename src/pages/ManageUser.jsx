@@ -7,6 +7,7 @@ import TanStackTable from "../component/TanstackTable/TanstackTable";
 import { Loader } from "../component/Loader";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Router } from "react-router-dom";
 
 const ManageUser = () => {
   const [showModal, setshowModal] = useState(false);
@@ -43,7 +44,12 @@ const ManageUser = () => {
         dispatch({ type: IS_LOADING, payload: false });
         setUserList(res.data || []);
       } catch (error) {
-        console.log(error);
+        console.log(error.response.status == 401  ,"ergerger");
+        if(error.response.status == 401){
+          window.location.href = '/login';
+        }
+        
+        dispatch({ type: IS_LOADING, payload: false });
       }
     };
     getAdminList();
@@ -64,6 +70,9 @@ const ManageUser = () => {
       getAdminList();
     } catch (error) {
       console.log(error);
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -91,6 +100,9 @@ const ManageUser = () => {
       toast.success("edited successfully.");
     } catch (error) {
       console.log(error);
+      if(error.response.status == 401){
+        window.location.href = '/login';
+      }
     }
   };
 

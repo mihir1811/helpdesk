@@ -37,6 +37,9 @@ const logout = async ()=>{
       dispatch({ type: USER_LOGOUT });
   } catch (error) {
     console.log(error);
+    if(error.response.status == 401){
+      window.location.href = '/login';
+    }
   }
 
   // navigate("/");
