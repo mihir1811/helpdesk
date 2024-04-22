@@ -15,7 +15,7 @@ const Header = () => {
 
 
 const logout = async ()=>{
-  
+
   
   try {
     
@@ -23,7 +23,7 @@ const logout = async ()=>{
       const refreshToken  = localStorage.getItem('refreshToken')
     
       const response = await axios.post(
-        "https://helpdesk-7ad4.onrender.com/user_accounts/logout/",
+        "https://helpdesk-latest.onrender.com/user_accounts/logout/",
         {
           refresh :refreshToken
         },

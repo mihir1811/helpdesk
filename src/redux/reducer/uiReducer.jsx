@@ -14,9 +14,6 @@ const intialState = {
     height: window.innerHeight,
     width: window.innerWidth,
   },
-  userProfileData:{
-    
-  }
 };
 
 export const isLoading = (state = intialState.isLoading, action) => {

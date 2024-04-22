@@ -1,5 +1,6 @@
 import { USER_INFO, USER_LOGOUT } from "../action";
 
+
 const intialState = {
   userInfo: {},
 };

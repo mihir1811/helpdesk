@@ -5,7 +5,6 @@ import Chat from "../component/Chat";
 
 const ManageMessages = () => {
 
-
   const adminData = [
     {
       name:"peter",

@@ -39,7 +39,7 @@ export const LogIn = () => {
       console.log(data, "response--------");
       const response = await axios.post(
         
-        "https://helpdesk-7ad4.onrender.com/user_accounts/login/",
+        "https://helpdesk-latest.onrender.com/user_accounts/login/",
         data,
         {
           headers: {
@@ -60,7 +60,7 @@ export const LogIn = () => {
       if(accessToken){
         console.log("userData--" , accessToken)
         const userData = await axios.get(
-          "https://helpdesk-7ad4.onrender.com/user_accounts/accounts/1/",
+          "https://helpdesk-latest.onrender.com/user_accounts/accounts/1/",
           {
             headers: {
               "Content-Type": "application/json", // Set appropriate content type for JSON data,
@@ -75,7 +75,7 @@ export const LogIn = () => {
 
       navigate("/")
 
-      // const res  = await axios.post("https://helpdesk-7ad4.onrender.com/user_accounts/register")
+      // const res  = await axios.post("https://helpdesk-latest.onrender.com/user_accounts/register")
 
       // if (logIn.data.success) {
       //   dispatch({ type: IS_LOADING, payload: false });

@@ -28,7 +28,7 @@ const ProfilePage = () => {
       const authToken = localStorage.getItem("authtoken");
 
       const res = await axios.patch(
-        `https://helpdesk-7ad4.onrender.com/user_accounts/accounts/${userData.id}/`,
+        `https://helpdesk-latest.onrender.com/user_accounts/accounts/${userData.id}/`,
         userData,
         {
           headers: {

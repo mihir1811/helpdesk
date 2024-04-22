@@ -19,9 +19,9 @@ const ManageHelpdesk = () => {
   const [isSubCategory, setIsSubcategory] = useState(false);
   const [subCategoryData, setSubCategoryData] = useState([]);
   const [parentCategoryId, setParentCategoryId] = useState(null);
-  const [isEditModel, setIsEditModel] = useState(false);
   const [type, setType] = useState("Add");
   const [selectedCategoryData, setSelectedCategoryData] = useState({});
+  const userRole = useSelector((state) => state.userInfo.role);
 
   const handleChange = (event, type) => {
     switch (type) {
@@ -66,7 +66,7 @@ const ManageHelpdesk = () => {
   const getStaffData = async () => {
     try {
       const res = await axios.get(
-        "https://helpdesk-7ad4.onrender.com/user_accounts/accounts/?role=staff",
+        "https://helpdesk-latest.onrender.com/user_accounts/accounts/?role=staff",
         {
           headers: {
             Authorization: `Token ${authToken}`,
@@ -76,8 +76,8 @@ const ManageHelpdesk = () => {
       setStaffData(res.data);
     } catch (error) {
       console.log(error);
-      if(error.response.status == 401){
-        window.location.href = '/login';
+      if (error.response.status == 401) {
+        window.location.href = "/login";
       }
     }
   };
@@ -90,7 +90,7 @@ const ManageHelpdesk = () => {
     try {
       dispatch({ type: IS_LOADING, payload: true });
       const res = await axios.get(
-        "https://helpdesk-7ad4.onrender.com/common/categories/"
+        "https://helpdesk-latest.onrender.com/common/categories/"
       );
       console.log(res);
       setAllCategories(res.data || []);
@@ -98,8 +98,8 @@ const ManageHelpdesk = () => {
     } catch (error) {
       console.log(error);
       dispatch({ type: IS_LOADING, payload: false });
-      if(error.response.status == 401){
-        window.location.href = '/login';
+      if (error.response.status == 401) {
+        window.location.href = "/login";
       }
     }
   };
@@ -108,7 +108,7 @@ const ManageHelpdesk = () => {
     try {
       console.log(newCategory, "Zdthsghergfed", selectedUser);
       const response = await axios.post(
-        "https://helpdesk-7ad4.onrender.com/common/categories/",
+        "https://helpdesk-latest.onrender.com/common/categories/",
         { ...newCategory, contact_person: selectedUser?.id },
         {
           headers: {
@@ -122,8 +122,8 @@ const ManageHelpdesk = () => {
       getCatrgories();
     } catch (error) {
       console.log(error);
-      if(error.response.status == 401){
-        window.location.href = '/login';
+      if (error.response.status == 401) {
+        window.location.href = "/login";
       }
     }
   };
@@ -132,7 +132,7 @@ const ManageHelpdesk = () => {
     try {
       console.log(selectedUser, "wefewfefewfew");
       const response = await axios.post(
-        "https://helpdesk-7ad4.onrender.com/common/categories/",
+        "https://helpdesk-latest.onrender.com/common/categories/",
         { ...newCategory, contact_person: selectedUser?.id },
         {
           headers: {
@@ -151,8 +151,8 @@ const ManageHelpdesk = () => {
       setIsSubcategory(true);
     } catch (error) {
       console.log(error);
-      if(error.response.status == 401){
-        window.location.href = '/login';
+      if (error.response.status == 401) {
+        window.location.href = "/login";
       }
     }
   };
@@ -163,12 +163,12 @@ const ManageHelpdesk = () => {
       console.log(parentCategoryId);
       const payload = {
         ...newCategory,
-        parent_category: parentCategoryId,
+        parent_category: parentCategoryId || null,
         contact_person: selectedSubcategoryUser?.id,
       };
 
       const response = await axios.post(
-        "https://helpdesk-7ad4.onrender.com/common/categories/",
+        "https://helpdesk-latest.onrender.com/common/categories/",
         payload,
         {
           headers: {
@@ -177,6 +177,7 @@ const ManageHelpdesk = () => {
         }
       );
 
+      setParentCategoryId(null);
       toast.success("Subcategory added successfully.");
       getCatrgories();
 
@@ -184,10 +185,58 @@ const ManageHelpdesk = () => {
       setIsSubcategory(true);
     } catch (error) {
       console.log(error);
-      if(error.response.status == 401){
-        window.location.href = '/login';
+      if (error.response.status == 401) {
+        window.location.href = "/login";
       }
     }
+  };
+
+  const handleEditCatrgory = async (data, hasParentCategory) => {
+    // setNewCategory;
+    try {
+      console.log(data, "VEWvewds");
+      const payload = {
+        category_name: data.category_name,
+        answer: data.answer,
+        contact_person: data.contact_person,
+        parent_category: hasParentCategory ? data.id : null,
+      };
+
+      const res = await axios.patch(
+        `https://helpdesk-latest.onrender.com/common/categories/${data?.id}/`,
+        payload,
+        {
+          headers: {
+            Authorization: `Token ${authToken}`,
+          },
+        }
+      );
+      toast.success("Edited successfully.");
+
+      getCatrgories();
+      return true;
+    } catch (error) {
+      console.log(error);
+      if (error.response.status == 401) {
+        window.location.href = "/login";
+      }
+    }
+  };
+
+  const handleEditSubmitCategory = (data, hasParentCategory) => {
+    console.log(data, "Wevewvewvd");
+    const isSuccessful = handleEditCatrgory(data, hasParentCategory);
+
+    if (isSuccessful) {
+      // getCatrgories()
+      setshowModal(false);
+    }
+  };
+
+  const editAddSubCategory = (data, hasParentCategory) => {
+    // const isSuccessful =  handleEditCatrgory(data, hasParentCategory);
+
+    setIsSubcategory(true);
   };
 
   useEffect(() => {
@@ -199,7 +248,6 @@ const ManageHelpdesk = () => {
       case "Add":
         return (
           <>
-            {" "}
             <h2 className="text-lg font-semibold">Add Category</h2>
             <div className="flex flex-col">
               <div className="my-2">
@@ -296,7 +344,7 @@ const ManageHelpdesk = () => {
               {isSubCategory ? (
                 <div className="grid gap-6 md:grid-cols-1  mt-3">
                   <button
-                    onClick={submitCategory}
+                    onClick={() => submitCategory()}
                     className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                   >
                     Submit
@@ -307,12 +355,14 @@ const ManageHelpdesk = () => {
                   <button
                     type="button"
                     onClick={addSubCategories}
+                    disabled={!newCategory.category_name && !newCategory.answer}
                     className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                   >
                     Add Sub Category
                   </button>
                   <button
                     onClick={AddCategories}
+                    disabled={!newCategory.category_name && !newCategory.answer}
                     className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                   >
                     Submit
@@ -324,14 +374,142 @@ const ManageHelpdesk = () => {
         );
         break;
       case "Edit":
-        return <h1>Edit</h1>;
+        return (
+          <>
+            <h2 className="text-lg font-semibold">Edit Category</h2>
+            <div className="flex flex-col">
+              <div className="my-2">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Category Name
+                </label>
+                <input
+                  type="text"
+                  value={"" || newCategory?.category_name}
+                  name="category_name"
+                  onChange={(e) => handleChange(e, "inputValue")}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
+              <div className="my-2">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  Answer:
+                </label>
+                <input
+                  type="text"
+                  name="answer"
+                  value={newCategory?.answer}
+                  onChange={(e) => handleChange(e, "inputValue")}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
+              <div className="my-2 flex items-center">
+                <label className="block w-[50%] mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                  contact person name:
+                </label>
+                <select
+                  className="border h-[41px] rounded-md w-[50%] px-1 focus:border-cyan-500"
+                  value={selectedUser?.id ?? ""}
+                  onChange={(e) => handleChange(e, "dropdownValue")}
+                >
+                  <option value="">Select User</option>
+                  {staffData?.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.first_name} {user.last_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {selectedCategoryData.has_subcategories ? (
+                <>
+                  <h2 className=" text-lg font-semibold mt-2">
+                    Sub Category details
+                  </h2>
+                  <div className="my-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      sub Category Name
+                    </label>
+                    <input
+                      type="text"
+                      name="category_name"
+                      value={subCategoryData?.category_name}
+                      onChange={(e) => handleChange(e, "subcategoryInput")}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    />
+                  </div>
+                  <div className="my-2">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      Answer:
+                    </label>
+                    <input
+                      type="text"
+                      name="answer"
+                      value={subCategoryData?.answer}
+                      onChange={(e) => handleChange(e, "subcategoryInput")}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    />
+                  </div>
+                  <div className="my-2 flex">
+                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                      contact person name(if something else):
+                    </label>
+                    <select
+                      className="border rounded-md w-[50%] px-1 focus:border-cyan-500"
+                      value={selectedSubcategoryUser?.id ?? ""}
+                      onChange={(e) =>
+                        handleChange(e, "subcategoryContactPerson")
+                      }
+                    >
+                      <option value="">Select User</option>
+                      {staffData?.map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.first_name} {user.last_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              ) : (
+                ""
+              )}
+
+              {newCategory.has_subcategories ? (
+                <div className="grid gap-6 md:grid-cols-1  mt-3">
+                  <button
+                    onClick={() =>
+                      handleEditSubmitCategory(subCategoryData, true)
+                    }
+                    className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  >
+                    Submit
+                  </button>
+                </div>
+              ) : (
+                <div className="grid gap-6 md:grid-cols-2  mt-3">
+                  <button
+                    type="button"
+                    onClick={() => editAddSubCategory(newCategory, false)}
+                    className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                  >
+                    Add Sub Category
+                  </button>
+                  <button
+                    onClick={() => handleEditSubmitCategory(newCategory, false)}
+                    className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  >
+                    Submit
+                  </button>
+                </div>
+              )}
+            </div>
+          </>
+        );
         break;
       case "View":
         const staffuser = staffData.find(
           (user) => user?.id == selectedCategoryData?.contact_person
         );
 
-        console.log(staffuser, "WEgvvwefewf");
         return (
           <>
             <div className="flex flex-col">
@@ -341,7 +519,7 @@ const ManageHelpdesk = () => {
                 </label>
                 <input
                   type="text"
-                  disabledtrue
+                  disabled={true}
                   value={selectedCategoryData?.category_name}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 />
@@ -358,20 +536,23 @@ const ManageHelpdesk = () => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 />
               </div>
-              <div className="my-2 ">
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  contact person name:
-                </label>
-                <input
-                  type="text"
-                  name="answer"
-                  disabled={true}
-                  value={`${staffuser?.first_name || ""} ${
-                    staffuser?.last_name || ""
-                  }`}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                />
-              </div>
+
+              {staffuser?.first_name && (
+                <div className="my-2 ">
+                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    contact person name:
+                  </label>
+                  <input
+                    type="text"
+                    name="answer"
+                    disabled={true}
+                    value={`${staffuser?.first_name || ""} ${
+                      staffuser?.last_name || ""
+                    }`}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  />
+                </div>
+              )}
 
               {console.log(selectedCategoryData, "ererer")}
               {selectedCategoryData?.has_subcategories ? (
@@ -381,7 +562,6 @@ const ManageHelpdesk = () => {
                   </h2>
 
                   {selectedCategoryData?.subcategories.map((data, index) => {
-
                     const staffuser = staffData.find(
                       (user) => user?.id == data?.contact_person
                     );
@@ -396,7 +576,9 @@ const ManageHelpdesk = () => {
                             name="category_name"
                             disabled={true}
                             value={data.category_name}
-                            // onChange={(e) => handleChange(e, "subcategoryInput")}
+                            onChange={(e) =>
+                              handleChange(e, "subcategoryInput")
+                            }
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           />
                         </div>
@@ -446,73 +628,82 @@ const ManageHelpdesk = () => {
   };
 
   return (
-    <div className="manage-user-container">
-      <div className="flex justify-between items-center">
-        <Title />
-        <button
-          onClick={() => {
-            setshowModal((prev) => !prev);
-            setIsSubcategory(false);
-            setSelectedUser({});
-            setSelectedSubcategoryUser({});
-            setType("Add");
-          }}
-          className="px-12 py-3 my-3 font-medium bg-[#ffce47] hover:bg-[rgba(255,206,71,0.8)] uppercase hover:text-black-600 text-black-500 rounded-lg text-sm"
-        >
-          + Add Category
-        </button>
-      </div>
-
-      <div className="mt-3 p-0">
-        {allCategories.length > 0 ? (
+    <>
+      {(userRole === "manager" ||"admin") && (
           <>
-            {allCategories.map((data, index) => {
-              return (
-                <>
-                  <div
-                    key={index}
-                    className="flex justify-between items-center p-3 my-4 px-5 text-white bg-black"
-                  >
-                    <div>{data.category_name}</div>
-                    <div>
-                      <button
-                        onClick={() => {
-                          // selectedca(data)
-                          setType("Edit");
-                          setshowModal(true);
-                          setSelectedCategoryData(data);
-                        }}
-                        className="px-5 py-2 rounded-md mr-3 bg-black text-[#ffce47]"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => {
-                          // selectedca(data)
-                          setType("View");
-                          setshowModal(true);
-                          setSelectedCategoryData(data);
-                        }}
-                        className="bg-[#ffce47] text-black px-6 py-2 rounded-md"
-                      >
-                        View
-                      </button>
-                    </div>
-                  </div>
-                </>
-              );
-            })}
-          </>
-        ) : (
-          // <Loader />
-          <h1 className="my-7 text-center text-lg">No Categories </h1>
-        )}
-      </div>
+            <div className="manage-user-container">
+              <div className="flex justify-between items-center">
+                <Title />
+                <button
+                  onClick={() => {
+                    setshowModal((prev) => !prev);
+                    setIsSubcategory(false);
+                    setSelectedUser({});
+                    setSelectedSubcategoryUser({});
+                    setType("Add");
+                    setNewCategory({});
+                    selectedCategoryData({});
+                  }}
+                  className="px-12 py-3 my-3 font-medium bg-[#ffce47] hover:bg-[rgba(255,206,71,0.8)] uppercase hover:text-black-600 text-black-500 rounded-lg text-sm"
+                >
+                  + Add Category
+                </button>
+              </div>
 
-      {showModal && (
-        <Modal onClose={() => setshowModal(false)}>
-          {modelContent(type)}
-          {/* <h2 className="text-lg font-semibold">Add Category</h2>
+              <div className="mt-3 p-0">
+                {allCategories.length > 0 ? (
+                  <>
+                    {allCategories.map((data, index) => {
+                      return (
+                        <>
+                          <div
+                            key={index}
+                            className="flex justify-between items-center p-3 my-4 px-5 text-white bg-black"
+                          >
+                            <div>{data.category_name}</div>
+                            <div>
+                              <button
+                                onClick={() => {
+                                  // selectedca(data)
+                                  setType("Edit");
+                                  setshowModal(true);
+                                  setSelectedCategoryData(data);
+                                  setNewCategory(data);
+                                  setIsSubcategory(false);
+                                  setSubCategoryData(data?.subcategories[0]);
+                                }}
+                                className="px-5 py-2 rounded-md mr-3 bg-black text-[#ffce47]"
+                              >
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => {
+                                  // selectedca(data)
+                                  setType("View");
+                                  setshowModal(true);
+                                  setSelectedCategoryData(data);
+                                  setNewCategory(selectedCategoryData);
+                                }}
+                                className="bg-[#ffce47] text-black px-6 py-2 rounded-md"
+                              >
+                                View
+                              </button>
+                            </div>
+                          </div>
+                        </>
+                      );
+                    })}
+                  </>
+                ) : (
+                  // <Loader />
+                  <h1 className="my-7 text-center text-lg">No Categories </h1>
+                )}
+              </div>
+
+              {showModal && (
+                <Modal onClose={() => setshowModal(false)}>
+                  {modelContent(type)}
+                  {/* <h2 className="text-lg font-semibold">Add Category</h2>
           <div className="flex flex-col">
             <div className="my-2">
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -632,9 +823,12 @@ const ManageHelpdesk = () => {
               </div>
             )}
           </div> */}
-        </Modal>
-      )}
-    </div>
+                </Modal>
+              )}
+            </div>
+          </>
+        )}
+    </>
   );
 };
 

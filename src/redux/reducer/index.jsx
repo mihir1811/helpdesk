@@ -6,6 +6,7 @@ import {
   screenSize,
 } from "./uiReducer";
 import { userInfo } from "./authReducer";
+import { chatInfo } from "./messageReducer";
 
 const rootReducer = combineReducers({
   isLoading,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   selectedTab,
   screenSize,
   userInfo,
+  chatInfo
 });
 
 export default rootReducer;
