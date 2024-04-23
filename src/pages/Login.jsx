@@ -71,16 +71,24 @@ export const LogIn = () => {
           }
         );
         dispatch({ type: USER_INFO, payload:userData.data });
+
+        if(userData?.data?.role == "parent"||"staff"){
+          navigate("/message")
+        }
+
       }
 
       toast.success("logged in");
 
+
       navigate("/")
 
     } catch (error) {
-      toast.error(error?.response?.data?.email[0]);
-      console.log("login error", error?.response?.data?.email[0]);
       dispatch({ type: IS_LOADING, payload: false });
+
+      console.log(error ,"efververver")
+      toast.error(error?.response?.data?.error||error?.response?.data?.email[0]);
+      console.log("login error", error?.response?.data?.email[0]);
     }
   };
   return (
@@ -93,7 +101,7 @@ export const LogIn = () => {
           >
             <div className="flex flex-col items-center mt-0">
               <div className="flex flex-col text-left">
-                <img src={LOGO} width={"100px"} alt="ppssf logo" />
+                <img src={LOGO} width={"80px"} alt="ppssf logo" />
               </div>
               <div>
                 <p className="text-2xl font-bold mt-3">user | admin</p>
