@@ -2,7 +2,7 @@ import React from "react";
 import { ReactSVG } from "react-svg";
 import bar from "../images/bars.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { IS_SIDEBAR_SMALL, USER_LOGOUT } from "../redux/action";
+import { IS_LOADING, IS_SIDEBAR_SMALL, USER_LOGOUT } from "../redux/action";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -18,9 +18,11 @@ const logout = async ()=>{
 
   
   try {
-    
+    dispatch({ type: IS_LOADING, payload: true });
+
       const authToken = localStorage.getItem('authtoken')
       const refreshToken  = localStorage.getItem('refreshToken')
+
     
       const response = await axios.post(
         "https://helpdesk-latest.onrender.com/user_accounts/logout/",
@@ -33,10 +35,13 @@ const logout = async ()=>{
           },
         }
       );
-    
+      dispatch({ type: IS_LOADING, payload: false });
       dispatch({ type: USER_LOGOUT });
+      toast.success(response?.data?.message);
   } catch (error) {
     console.log(error);
+    dispatch({ type: IS_LOADING, payload: false });
+    toast.error(error?.response?.data?.message);
     if(error.response.status == 401){
       window.location.href = '/login';
     }
