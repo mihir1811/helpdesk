@@ -2,7 +2,7 @@ import LOGO from "../images/ppssf_logo.png";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import APIInstance from "../API";
-import { useDispatch } from "react-redux";
+import { useDispatch , useSelector } from "react-redux";
 import { IS_LOADING, USER_INFO } from "../redux/action";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -13,6 +13,8 @@ export const LogIn = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const isLoading = useSelector((data)=> data.isLoading)
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ export const LogIn = () => {
     //   dispatch({ type: IS_LOADING, payload: false });
     // }
     try {
-      // dispatch({ type: IS_LOADING, payload: true });
+      dispatch({ type: IS_LOADING, payload: true });
       console.log(data, "response--------");
       const response = await axios.post(
         
@@ -75,15 +77,6 @@ export const LogIn = () => {
 
       navigate("/")
 
-      // const res  = await axios.post("https://helpdesk-latest.onrender.com/user_accounts/register")
-
-      // if (logIn.data.success) {
-      //   dispatch({ type: IS_LOADING, payload: false });
-      //   dispatch({ type: USER_INFO, payload: logIn.data.data });
-      //   localStorage.setItem("authtoken", logIn.data.data.token);
-      //   toast.success(logIn.data.message);
-      //   navigate("/");
-      // }
     } catch (error) {
       toast.error(error?.response?.data?.email[0]);
       console.log("login error", error?.response?.data?.email[0]);
@@ -134,7 +127,9 @@ export const LogIn = () => {
                 )}
               </div>
               <div>
-                <button className="px-12 py-3 mt-4 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm">
+
+                {console.log(isLoading ,"ewgrghwsrthaewfs")}
+                <button disabled={isLoading} className="px-12 disabled:bg-blue-200 py-3 mt-4 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm">
                   sign in
                 </button>
               </div>
