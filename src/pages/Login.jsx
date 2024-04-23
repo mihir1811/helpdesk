@@ -131,7 +131,7 @@ export const LogIn = () => {
                   {...register("password", { required: true })}
                 />
                 {errors.password && (
-                  <span className="text-[red]">passowrd is required</span>
+                  <span className="text-[red]">password is required</span>
                 )}
               </div>
               <div>
