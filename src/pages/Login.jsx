@@ -135,8 +135,6 @@ export const LogIn = () => {
                 )}
               </div>
               <div>
-
-                {console.log(isLoading ,"ewgrghwsrthaewfs")}
                 <button disabled={isLoading} className="px-12 disabled:bg-blue-200 py-3 mt-4 font-medium bg-blue-50 hover:bg-blue-100 hover:text-blue-600 text-blue-500 rounded-lg text-sm">
                   sign in
                 </button>
