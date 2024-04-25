@@ -143,6 +143,7 @@ const ManageAdmin = () => {
             <button
               onClick={() => {
                 setshowModal((prev) => !prev);
+                setNewUserData({});
               }}
               className="px-12 py-3 my-3 font-medium bg-[#ffce47] hover:bg-[rgba(255,206,71,0.8)] uppercase hover:text-black-600 text-black-500 rounded-lg text-sm"
             >
@@ -196,13 +197,17 @@ const ManageAdmin = () => {
                   <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     email
                   </label>
-                  <input
+                  {/* <input
                     type="text"
                     name="email"
                     value={newUserData.email || ""}
                     onChange={handleChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  />
+                  /> */}
+
+                <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  {newUserData.email}
+                </div>
                 </div>
                 {isEditingData ? (
                   ""

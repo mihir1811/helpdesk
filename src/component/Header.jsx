@@ -31,7 +31,7 @@ const logout = async ()=>{
         },
         {
           headers: {
-            "Content-Type": "application/json", // Set appropriate content type for JSON data
+            "Content-Type": "application/json", // Set appropriate content type for JSON dat  a
           },
         }
       );

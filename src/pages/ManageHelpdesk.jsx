@@ -22,6 +22,7 @@ const ManageHelpdesk = () => {
   const [type, setType] = useState("Add");
   const [selectedCategoryData, setSelectedCategoryData] = useState({});
   const userRole = useSelector((state) => state.userInfo.role);
+  const [isEditCategoryData , setIsEditcategoryData] = useState(false) 
 
   const handleChange = (event, type) => {
     switch (type) {
@@ -159,10 +160,8 @@ const ManageHelpdesk = () => {
 
   const submitCategory = async () => {
     try {
-      // const getParentId = allCategories.find()
-      console.log(parentCategoryId);
       const payload = {
-        ...newCategory,
+        ...subCategoryData,
         parent_category: parentCategoryId || null,
         contact_person: selectedSubcategoryUser?.id,
       };
@@ -224,7 +223,7 @@ const ManageHelpdesk = () => {
   };
 
   const handleEditSubmitCategory = (data, hasParentCategory) => {
-    console.log(data, "Wevewvewvd");
+    console.log(data, "Wevewvewvd" , subCategoryData , "new category",  newCategory);
     const isSuccessful = handleEditCatrgory(data, hasParentCategory);
 
     if (isSuccessful) {
@@ -234,8 +233,6 @@ const ManageHelpdesk = () => {
   };
 
   const editAddSubCategory = (data, hasParentCategory) => {
-    // const isSuccessful =  handleEditCatrgory(data, hasParentCategory);
-
     setIsSubcategory(true);
   };
 
@@ -420,7 +417,7 @@ const ManageHelpdesk = () => {
                 </select>
               </div>
 
-              {selectedCategoryData.has_subcategories ? (
+              { isSubCategory ||selectedCategoryData.has_subcategories ? (
                 <>
                   <h2 className=" text-lg font-semibold mt-2">
                     Sub Category details
@@ -643,6 +640,7 @@ const ManageHelpdesk = () => {
                     setType("Add");
                     setNewCategory({});
                     selectedCategoryData({});
+                    setIsEditcategoryData(false);
                   }}
                   className="px-12 py-3 my-3 font-medium bg-[#ffce47] hover:bg-[rgba(255,206,71,0.8)] uppercase hover:text-black-600 text-black-500 rounded-lg text-sm"
                 >
@@ -671,6 +669,7 @@ const ManageHelpdesk = () => {
                                   setNewCategory(data);
                                   setIsSubcategory(false);
                                   setSubCategoryData(data?.subcategories[0]);
+                                  setIsEditcategoryData(true)
                                 }}
                                 className="px-5 py-2 rounded-md mr-3 bg-black text-[#ffce47]"
                               >
@@ -683,6 +682,7 @@ const ManageHelpdesk = () => {
                                   setshowModal(true);
                                   setSelectedCategoryData(data);
                                   setNewCategory(selectedCategoryData);
+                                  setIsEditcategoryData(false)
                                 }}
                                 className="bg-[#ffce47] text-black px-6 py-2 rounded-md"
                               >

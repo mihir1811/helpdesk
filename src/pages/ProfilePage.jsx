@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { IS_LOADING } from "../redux/action";
+import { IS_LOADING, USER_INFO } from "../redux/action";
 import axios from "axios";
 import toast from "react-hot-toast";
-
 
 const ProfilePage = () => {
   const userProfileData = useSelector((state) => state.userInfo);
@@ -24,8 +23,14 @@ const ProfilePage = () => {
   const saveUserData = async () => {
     try {
       dispatch({ type: IS_LOADING, payload: true });
-      console.log("savw data")
+      console.log("savw data");
       const authToken = localStorage.getItem("authtoken");
+
+//       const payload ={
+// ...userData
+//       }
+
+//       console.log(payload ,"Hsdgsdx")
 
       const res = await axios.patch(
         `https://helpdesk-latest.onrender.com/user_accounts/accounts/${userData.id}/`,
@@ -41,11 +46,11 @@ const ProfilePage = () => {
 
       toast.success("edited successfully.");
     } catch (error) {
-        dispatch({ type: IS_LOADING, payload: false });
-        toast.error(error.message);
-        if(error.response.status == 401){
-          window.location.href = '/login';
-        }
+      dispatch({ type: IS_LOADING, payload: false });
+      toast.error(error.message);
+      if (error.response.status == 401) {
+        window.location.href = "/login";
+      }
     }
   };
 
@@ -82,14 +87,9 @@ const ProfilePage = () => {
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             email
           </label>
-          <input
-            type="text"
-            name="email"
-            value={userData.email || ""}
-            onChange={handleChange}
-            disabled={!isEdit}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          />
+          <div className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            {userData.username}
+            </div>
         </div>
 
         <button
